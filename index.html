@@ -13,12 +13,19 @@
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Transition untuk efek buka tutup sidebar yang mulus */
+        #sidebar { transition: all 0.3s ease-in-out; }
     </style>
 </head>
-<body class="bg-slate-100 h-screen w-screen overflow-hidden flex">
+<body class="bg-slate-100 h-screen w-screen overflow-hidden flex relative">
+
+    <!-- Overlay untuk Sidebar di HP (Muncul saat sidebar terbuka di layar kecil) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden transition-opacity"></div>
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-slate-900 text-slate-400 flex flex-col h-full flex-shrink-0">
+    <!-- PERUBAHAN: Ditambahkan ID 'sidebar' dan class untuk responsivitas mobile -->
+    <aside id="sidebar" class="w-64 bg-slate-900 text-slate-400 flex flex-col h-full flex-shrink-0 absolute md:relative z-30 transform -translate-x-full md:translate-x-0">
         <div class="h-16 flex items-center px-4 bg-slate-900 border-b border-slate-800">
             <div class="flex items-center gap-3">
                 <div class="text-blue-500 text-2xl"><i class="fa-solid fa-industry"></i></div>
@@ -45,7 +52,10 @@
         <!-- Header -->
         <header class="h-16 bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 lg:px-6 flex-shrink-0 z-10">
             <div class="flex items-center gap-4">
-                <button class="text-slate-500 hover:text-slate-800 focus:outline-none"><i class="fa-solid fa-bars text-xl"></i></button>
+                <!-- PERUBAHAN: Ditambahkan ID 'btn-toggle-sidebar' pada tombol hamburger -->
+                <button id="btn-toggle-sidebar" class="text-slate-500 hover:text-slate-800 focus:outline-none transition-colors">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
                 <div class="h-6 w-px bg-gray-300 mx-2 hidden sm:block"></div>
                 <h1 class="text-lg font-semibold text-slate-800 hidden sm:block">Shift Handover (SHO)</h1>
             </div>
@@ -188,7 +198,6 @@
                             <!-- Lampiran Upload -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Dokumentasi <span class="text-slate-400 text-xs font-normal">(Maks 10 Foto/File, hanya masuk Spreadsheet)</span></label>
-                                <!-- capture="environment" memungkinkan kamera langsung terbuka di HP -->
                                 <div class="relative border-2 border-dashed border-slate-300 bg-slate-50/50 rounded-lg p-4 hover:bg-slate-100 transition-colors text-center cursor-pointer">
                                     <input type="file" id="input-lampiran" multiple accept="image/*" capture="environment" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                                     <div class="text-slate-500 flex flex-col items-center gap-1 pointer-events-none">
@@ -197,7 +206,6 @@
                                         <span class="text-xs">Klik di sini untuk upload. File akan otomatis masuk ke Google Drive.</span>
                                     </div>
                                 </div>
-                                <!-- Tempat preview nama file -->
                                 <div id="preview-lampiran" class="mt-2 text-xs text-slate-600 space-y-1"></div>
                             </div>
 
@@ -211,7 +219,7 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Log Handovers (Transformed from WA format) -->
+                <!-- Right Column: Log Handovers -->
                 <div class="bg-white rounded-md shadow-sm border border-gray-100 flex flex-col h-full">
                     <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                         <h2 class="text-base font-semibold text-slate-800 flex items-center gap-2">
@@ -222,12 +230,10 @@
                     
                     <div class="p-5 flex-1 overflow-y-auto space-y-4">
                         
-                        <!-- Single Handover Card (Replica of WA Data) -->
+                        <!-- Single Handover Card -->
                         <div class="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                            <!-- Left Color Accent -->
                             <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
                             
-                            <!-- Header -->
                             <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                                 <div class="flex items-center gap-2">
                                     <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider">
@@ -239,9 +245,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Body -->
                             <div class="p-4">
-                                <!-- Shift Info Grid -->
                                 <div class="grid grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <p class="text-xs text-slate-400 font-semibold uppercase mb-1">Shift Out (Shift 3)</p>
@@ -259,7 +263,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Status Grid -->
                                 <div class="grid grid-cols-2 gap-4 mb-5 border-y border-slate-100 py-3">
                                     <div>
                                         <p class="text-xs text-slate-400 font-semibold uppercase mb-1">Tools</p>
@@ -273,7 +276,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Findings -->
                                 <div>
                                     <p class="text-xs text-slate-400 font-semibold uppercase mb-2 flex items-center gap-1">
                                         <i class="fa-solid fa-magnifying-glass text-slate-300"></i> Findings / Temuan
@@ -298,7 +300,6 @@
                             </div>
                         </div>
                         
-                        <!-- Older Log Placeholder -->
                         <div class="border border-dashed border-gray-300 rounded-lg p-6 text-center text-slate-500">
                             <i class="fa-solid fa-inbox text-2xl mb-2 text-slate-300"></i>
                             <p class="text-sm">Log handover sebelumnya akan muncul di sini</p>
@@ -321,6 +322,55 @@
     </div>
 
     <script>
+        // ==========================================
+        // LOGIKA TOGGLE SIDEBAR (HAMBURGER MENU)
+        // ==========================================
+        const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        // Fungsi buka tutup sidebar
+        function toggleSidebar() {
+            // Logika untuk layar lebar (Laptop/Desktop)
+            if (window.innerWidth >= 768) {
+                if (sidebar.classList.contains('-ml-64')) {
+                    sidebar.classList.remove('-ml-64');
+                } else {
+                    sidebar.classList.add('-ml-64');
+                }
+            } 
+            // Logika untuk layar kecil (HP/Tablet)
+            else {
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    // Buka sidebar di HP
+                    sidebar.classList.remove('-translate-x-full');
+                    overlay.classList.remove('hidden');
+                } else {
+                    // Tutup sidebar di HP
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.add('hidden');
+                }
+            }
+        }
+
+        // Event listener saat tombol hamburger ditekan
+        btnToggleSidebar.addEventListener('click', toggleSidebar);
+
+        // Menutup sidebar jika area hitam (overlay) di klik pada mode HP
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Pastikan sidebar menyesuaikan diri jika layar diubah ukurannya (rotate HP/resize browser)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebar.classList.remove('-ml-64');
+            }
+        });
+
+
         // Simple script to update the clock
         function updateClock() {
             const now = new Date();
@@ -341,22 +391,21 @@
         // ==========================================
         const inputLampiran = document.getElementById('input-lampiran');
         const previewLampiran = document.getElementById('preview-lampiran');
-        let selectedFiles = []; // Array untuk menyimpan file yang valid
+        let selectedFiles = []; 
 
         inputLampiran.addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             
-            // Batasi hanya maksimal 10 file
             if (files.length > 10) {
                 showToast('error', 'Melebihi Batas', 'Maksimal hanya 10 foto/file yang diizinkan!');
-                inputLampiran.value = ''; // Reset input
+                inputLampiran.value = ''; 
                 previewLampiran.innerHTML = '';
                 selectedFiles = [];
                 return;
             }
 
             selectedFiles = files;
-            previewLampiran.innerHTML = ''; // Kosongkan preview lama
+            previewLampiran.innerHTML = ''; 
             
             if (files.length > 0) {
                 previewLampiran.innerHTML = `<p class="font-semibold text-blue-600">${files.length} file dipilih:</p>`;
@@ -467,15 +516,16 @@ ${findingsFormatted}`;
                 // ==========================================
                 // A. KIRIM POST KE GOOGLE SPREADSHEET (APPS SCRIPT)
                 // ==========================================
-                // PENTING: Kembali menggunakan JSON murni (JSON.stringify)
-                // Menambahkan 'Content-Type': 'text/plain' agar tidak memicu error CORS di Browser saat menembak Apps Script
                 fetch(GOOGLE_SHEETS_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'text/plain;charset=utf-8',
+                        'Content-Type': 'text/plain',
                     },
                     body: JSON.stringify(sheetData)
-                }).catch(err => console.log('Info pengiriman Sheets:', err));
+                })
+                .then(() => console.log('Sukses bypass CORS browser'))
+                .catch(err => console.log('Info pengiriman Sheets:', err));
 
                 // ==========================================
                 // B. KIRIM POST KE WHATSAPP VIA FONNTE
@@ -496,7 +546,7 @@ ${findingsFormatted}`;
                     showToast('success', 'Berhasil Dikirim!', 'SHO ke Grup WA & Spreadsheet terkirim.');
                     document.getElementById('sho-form').reset();
                     previewLampiran.innerHTML = '';
-                    selectedFiles = []; // Kosongkan state file
+                    selectedFiles = []; 
                 } else {
                     showToast('error', 'Gagal Mengirim', result.reason || 'Mohon periksa kembali koneksi Anda.');
                 }
