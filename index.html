@@ -134,7 +134,7 @@
                         <form id="sho-form" class="space-y-4">
                             <!-- Area/Mesin -->
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Area / Mesin <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">PLANT <span class="text-red-500">*</span></label>
                                 <select id="input-area" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white">
                                     <option value="" disabled>Pilih Area/Mesin</option>
                                     <option value="MAINTENANCE SUN 1" selected>Maintenance SUN 1</option>
@@ -195,10 +195,11 @@
                             </div>
 
                             <!-- Lampiran Upload -->
+                            <!-- PERUBAHAN: Menghapus `capture="environment"` agar memunculkan pilihan File/Kamera -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Dokumentasi <span class="text-slate-400 text-xs font-normal">(Maks 10 Foto/File, hanya masuk Spreadsheet)</span></label>
                                 <div class="relative border-2 border-dashed border-slate-300 bg-slate-50/50 rounded-lg p-4 hover:bg-slate-100 transition-colors text-center cursor-pointer">
-                                    <input type="file" id="input-lampiran" multiple accept="image/*" capture="environment" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                    <input type="file" id="input-lampiran" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                                     <div class="text-slate-500 flex flex-col items-center gap-1 pointer-events-none">
                                         <i class="fa-solid fa-camera text-2xl text-blue-500 mb-1"></i>
                                         <span class="text-sm font-semibold">Pilih atau Ambil Foto</span>
@@ -517,14 +518,11 @@ ${findingsFormatted}`;
                 // ==========================================
                 fetch(GOOGLE_SHEETS_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'text/plain',
+                        'Content-Type': 'text/plain;charset=utf-8',
                     },
                     body: JSON.stringify(sheetData)
-                })
-                .then(() => console.log('Sukses bypass CORS browser'))
-                .catch(err => console.log('Info pengiriman Sheets:', err));
+                }).catch(err => console.log('Info pengiriman Sheets:', err));
 
                 // ==========================================
                 // B. KIRIM POST KE WHATSAPP VIA FONNTE
